@@ -1,0 +1,30 @@
+name: cipipline
+
+on: [push]
+jobs:
+ linter:
+   runs-on: ubuntu-latest
+   steps:
+     - name: checkout
+       uses: actions/checkout@v4
+     - name: linter see
+       run: echo "linter pass"
+ trains:
+   needs: linter
+   runs-on: ubuntu-latest
+   if: success() && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message ,'[run-train]')
+   steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: train see
+      run: echo "train pass"
+    - name: err
+      if : failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: error_logs
+        path: error_logs.txt
+    - name: clea
+      if: always()
+      run: echo "Cleaning up temporary cloud volumes..."
+        
